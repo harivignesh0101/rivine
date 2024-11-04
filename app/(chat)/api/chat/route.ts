@@ -1,14 +1,13 @@
-import {streamText} from "ai";
+import { streamText } from "ai";
 import { google } from '@ai-sdk/google';
 import path from "node:path";
 import * as fs from "node:fs";
 import { getAuth } from '@clerk/nextjs/server';
+import {NextRequest} from "next/server";
 
-
-export async function POST(req: any) {
+export async function POST(req: NextRequest) {
     const { messages } = await req.json();
     const { userId } = getAuth(req);
-
 
     // Validate the messages array
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -38,7 +37,6 @@ export async function POST(req: any) {
                         image: fs.readFileSync(filePath),
                     };
                 }
-                // Add more types as needed, with an appropriate default case
                 return null; // or handle unknown attachment types
             }).filter((item: any) => item !== null); // Remove any null entries from the array
 
@@ -52,26 +50,6 @@ export async function POST(req: any) {
         }
     }
 
-    // const filePath = path.join(process.cwd(), 'temp', 'rivine.csv');
-    // messages.push(
-    //     {
-    //         role: 'user',
-    //         content: [
-    //             {
-    //                 type: 'file',
-    //                 data: fs.readFileSync(filePath),
-    //                 mimeType: 'text/csv'
-    //             },
-    //             {
-    //                 type: 'text',
-    //                 text: 'Describe the file'
-    //             }
-    //         ]
-    //     }
-    // );
-    //
-    // console.log( JSON.stringify(messages))
-
     try {
         const result = await streamText({
             model: google('models/gemini-1.5-flash-latest'),
@@ -79,7 +57,15 @@ export async function POST(req: any) {
             messages,
         });
 
-        return result.toAIStreamResponse();
+        // Ensure that result.toAIStreamResponse() is a Response object
+        const aiStreamResponse = result.toAIStreamResponse(); // Check what this returns
+
+        // If aiStreamResponse is not a Response object, convert it to JSON
+        if (aiStreamResponse instanceof Response) {
+            return aiStreamResponse;
+        } else {
+            return new Response(JSON.stringify(aiStreamResponse), { status: 200 });
+        }
     } catch (error) {
         console.error('Error generating content:', error);
         return new Response(JSON.stringify({ error: 'Failed to generate content' }), { status: 500 });
