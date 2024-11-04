@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { S3Client, PutObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
-import {getAuth} from "@node_modules/@clerk/nextjs/dist/types/server";
+import { getAuth } from '@clerk/nextjs/server';
 
 const s3 = new S3Client({
     region: process.env.AWS_REGION,
