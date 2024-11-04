@@ -393,6 +393,7 @@ export const Toolbar = ({
             className="p-3"
             onClick={() => {
               stop();
+              // @ts-expect-error: unwanted value error
               setMessages((messages) => sanitizeUIMessages(messages));
             }}
           >

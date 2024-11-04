@@ -252,6 +252,7 @@ export function MultimodalInput({
           onClick={(event) => {
             event.preventDefault();
             stop();
+            // @ts-expect-error: unwanted value error
             setMessages((messages) => sanitizeUIMessages(messages));
           }}
         >
