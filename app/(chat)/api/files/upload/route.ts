@@ -47,6 +47,8 @@ export async function POST(request: NextRequest) {
         access: "public",
       });
 
+      data.pathname = filename
+
       return NextResponse.json(data);
     } catch (error) {
       return NextResponse.json({ error: "Upload failed" }, { status: 500 });
