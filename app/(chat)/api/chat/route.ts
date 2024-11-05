@@ -20,35 +20,35 @@ export async function POST(req: NextRequest) {
         return new Response(JSON.stringify({ error: 'User message is required' }), { status: 400 });
     }
 
-    for (const message of messages) {
-        if (message.role === 'user' && message.experimental_attachments) {
-            const newContent = message.experimental_attachments.map((attachment: any) => {
-                const filePath = path.join(process.cwd(), 'temp', userId!, attachment.name);
-
-                if (attachment.type === 'file') {
-                    return {
-                        type: attachment.type,
-                        data: fs.readFileSync(filePath),
-                        mimeType: attachment.mimeType,
-                    };
-                } else if (attachment.type === 'image') {
-                    return {
-                        type: attachment.type,
-                        image: fs.readFileSync(filePath),
-                    };
-                }
-                return null; // or handle unknown attachment types
-            }).filter((item: any) => item !== null); // Remove any null entries from the array
-
-            newContent.push({
-                type: 'text',
-                text: message.content,
-            });
-
-            message.content = newContent;
-            delete message.experimental_attachments;
-        }
-    }
+    // for (const message of messages) {
+    //     if (message.role === 'user' && message.experimental_attachments) {
+    //         const newContent = message.experimental_attachments.map((attachment: any) => {
+    //             const filePath = path.join(process.cwd(), 'temp', userId!, attachment.name);
+    //
+    //             if (attachment.type === 'file') {
+    //                 return {
+    //                     type: attachment.type,
+    //                     data: fs.readFileSync(filePath),
+    //                     mimeType: attachment.mimeType,
+    //                 };
+    //             } else if (attachment.type === 'image') {
+    //                 return {
+    //                     type: attachment.type,
+    //                     image: fs.readFileSync(filePath),
+    //                 };
+    //             }
+    //             return null; // or handle unknown attachment types
+    //         }).filter((item: any) => item !== null); // Remove any null entries from the array
+    //
+    //         newContent.push({
+    //             type: 'text',
+    //             text: message.content,
+    //         });
+    //
+    //         message.content = newContent;
+    //         delete message.experimental_attachments;
+    //     }
+    // }
 
     try {
         const result = await streamText({

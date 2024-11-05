@@ -121,8 +121,7 @@ export function MultimodalInput({
         return {
           url,
           name: pathname,
-          mimeType: contentType,
-          type: type
+          contentType: contentType,
         };
       } else {
         const { error } = await response.json();
