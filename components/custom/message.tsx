@@ -11,6 +11,7 @@ import { DocumentToolCall, DocumentToolResult } from './document';
 import { Markdown } from './markdown';
 import { PreviewAttachment } from './preview-attachment';
 import { Weather } from './weather';
+import DynamicChart from "@components/custom/DynamicChart";
 
 export const Message = ({
   role,
@@ -68,13 +69,17 @@ export const Message = ({
                     <div key={toolCallId}>
                       {toolName === 'getWeather' ? (
                         <Weather weatherAtLocation={result} />
+                      ) : toolName === 'getChart' ? (
+                          <DynamicChart loading={false}
+                              config={result}
+                          />
                       ) : toolName === 'createDocument' ? (
-                        <DocumentToolResult
-                          type="create"
-                          result={result}
-                          canvas={canvas}
-                          setCanvas={setCanvas}
-                        />
+                          <DocumentToolResult
+                              type="create"
+                              result={result}
+                              canvas={canvas}
+                              setCanvas={setCanvas}
+                          />
                       ) : toolName === 'updateDocument' ? (
                         <DocumentToolResult
                           type="update"
@@ -104,8 +109,11 @@ export const Message = ({
                     >
                       {toolName === 'getWeather' ? (
                         <Weather />
+                      ) : toolName === 'getChart' ? (
+                          <DynamicChart loading={true} config={args}
+                          />
                       ) : toolName === 'createDocument' ? (
-                        <DocumentToolCall type="create" args={args} />
+                          <DocumentToolCall type="create" args={args} />
                       ) : toolName === 'updateDocument' ? (
                         <DocumentToolCall type="update" args={args} />
                       ) : toolName === 'requestSuggestions' ? (
